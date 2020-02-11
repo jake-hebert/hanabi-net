@@ -1,12 +1,20 @@
+import Link from "next/link";
+import Layout from "../components/Layout";
+
 export default function Index() {
   return (
-    <div>
+    <Layout>
       <div>
-        <p>Welcome to Hanabi-Net!</p>
+        <p>
+          <span className="title">Welcome to Hanabi-Net!</span>
+          <br />A place for... hopefully, eventually playing Hanabi online
+        </p>
       </div>
       <br />
       <div>
-        <button> Start a game </button>
+        <Link href="/newGame">
+          <button title="new game"> Start a game </button>
+        </Link>
       </div>
       <br />
       <div>
@@ -34,6 +42,16 @@ export default function Index() {
           3/3 players
         </p>
       </div>
-    </div>
+      <style jsx>
+        {`
+          a {
+            padding: 20px 30px 0px 10px;
+          }
+          .title {
+            font-size: 25px;
+          }
+        `}
+      </style>
+    </Layout>
   );
 }
