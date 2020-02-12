@@ -4,11 +4,6 @@ import Link from "next/link";
 interface GameDetailProps {
   game: Game;
 }
-/*
-interface GameDetailState {
-  gameId: string;
-}
-*/
 
 export default class NewGameForm extends React.Component<GameDetailProps, any> {
   joinGame = () => {

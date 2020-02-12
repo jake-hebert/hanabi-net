@@ -11,8 +11,8 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
-    //"isolatedModules": false
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "exclude": ["node_modules"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
