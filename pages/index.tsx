@@ -1,7 +1,25 @@
 import Link from "next/link";
 import Layout from "../components/Layout";
+import fetch from "isomorphic-unfetch";
+import { Game } from "../types";
+import GameDetails from "../components/gameDetails";
 
-export default function Index() {
+const Index = (data: any) => {
+  const getGames = () => {
+    let dataKeys = Object.keys(data);
+    console.log(dataKeys);
+    let games: Game[] = [];
+    let values = Object.values(data);
+    for (let i = 0; i < values.length - 1; i++) {
+      games.push(values[i] as Game);
+    }
+    return games;
+  };
+
+  const gameList = getGames().map(g => (
+    <GameDetails game={g} key={g._id as string} />
+  ));
+
   return (
     <Layout>
       <div>
@@ -12,36 +30,12 @@ export default function Index() {
       </div>
       <br />
       <div>
-        <Link href="/newGame">
+        <Link href="/newGamePage">
           <button title="new game"> Start a game </button>
         </Link>
       </div>
       <br />
-      <div>
-        <p>
-          Game 12345 - Waiting for players
-          <br />
-          2/4 players
-          <br />
-          <button>Join Game</button>
-        </p>
-      </div>
-      <div>
-        <p>
-          Game 09876 - Waiting for players
-          <br />
-          3/4 players
-          <br />
-          <button>Join Game</button>
-        </p>
-      </div>
-      <div>
-        <p>
-          Game 23232 - playing
-          <br />
-          3/3 players
-        </p>
-      </div>
+      <div>{gameList}</div>
       <style jsx>
         {`
           a {
@@ -54,4 +48,19 @@ export default function Index() {
       </style>
     </Layout>
   );
-}
+};
+
+Index.getInitialProps = async () => {
+  const baseUri =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://hanabi-net.herokuapp.com";
+  const res = await fetch(baseUri + "/api/games", {
+    method: "get"
+  });
+
+  const data = await res.json();
+  return data;
+};
+
+export default Index;

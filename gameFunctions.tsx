@@ -2,10 +2,10 @@ import { GameCard, Player, Game } from "./types";
 // init game
 export const initGame = (totalPlayers: number): Game => {
   let game: Game = {
-    id: "hg0001",
+    _id: null,
     status: "new",
     requiredPlayers: totalPlayers,
-    activePlayers: 1,
+    activePlayers: 0,
     playerList: [],
     drawPile: initDeck(),
     bombs: 0,

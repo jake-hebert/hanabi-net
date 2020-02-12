@@ -13,7 +13,7 @@ export interface Player {
 }
 
 export interface Game {
-  id: string;
+  _id: string | null;
   status: string; //"won" | "lost" | "new" | "active"
   requiredPlayers: number;
   activePlayers: number;
@@ -27,4 +27,9 @@ export interface Game {
   yellowPile: number;
   whitePile: number;
   greenPile: number;
+}
+
+export interface Move {
+  id: string;
+  gameId: string;
 }
