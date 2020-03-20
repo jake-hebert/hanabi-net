@@ -1,7 +1,9 @@
 //put exports here
 export interface GameCard {
+  id: number;
   num: number;
-  color: string; // validation of color gets weird
+  color: string;
+  selected: boolean;
   handPosition?: number; //order in hand
   flip?: boolean;
 }
@@ -19,6 +21,7 @@ export interface Game {
   activePlayers: number;
   playerList: Player[];
   drawPile: GameCard[];
+  discardPile: GameCard[];
   bombs: number;
   hints: number;
   turn: number;
@@ -27,6 +30,7 @@ export interface Game {
   yellowPile: number;
   whitePile: number;
   greenPile: number;
+  lastHint: string;
 }
 
 export interface Move {

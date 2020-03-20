@@ -1,6 +1,7 @@
 import React from "react";
 import { initGame } from "../gameFunctions";
 import fetch from "isomorphic-unfetch";
+import Router from "next/router";
 
 interface NewGameState {
   numberOfPlayers: number;
@@ -20,9 +21,7 @@ export default class NewGameForm extends React.Component<any, NewGameState> {
   };
 
   handleSubmit = async (event: any) => {
-    console.log("new game submitted");
     const game = initGame(this.state.numberOfPlayers);
-    console.log(game);
     const baseUri =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
@@ -31,8 +30,7 @@ export default class NewGameForm extends React.Component<any, NewGameState> {
       method: "post",
       body: JSON.stringify(game)
     });
-
-    console.log(res);
+    Router.push("/index");
   };
 
   render() {

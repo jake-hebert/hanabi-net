@@ -9,7 +9,7 @@ export default class NewGameForm extends React.Component<GameDetailProps, any> {
   joinGame = () => {
     if (this.props.game.status === "new") {
       return (
-        <Link href="/game">
+        <Link href={"/game/" + this.props.game._id}>
           <button> Join Game </button>
         </Link>
       );

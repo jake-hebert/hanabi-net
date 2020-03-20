@@ -1,5 +1,7 @@
 import nextConnect from "next-connect";
 import middleware from "../../middleware/database";
+import { getQryParams } from "../../utilityFunctions";
+import { ObjectId } from "mongodb";
 
 const handler = nextConnect();
 
@@ -8,18 +10,20 @@ handler.use(middleware);
 handler.get(async (req: any, res: any) => {
   // if an id is passed, query for it
   //
-
-  //const bulk = req.db.collection("Games").initializeOrderedBulkOp();
-  let doc = await req.db
-    .collection("Games")
-    .find()
-    .toArray();
+  const params = getQryParams(req.url);
+  let doc;
+  if (params.id) {
+    // cant just query an id string - have to make a new instance of objectid... WTF?
+    let id: string = params.id;
+    doc = await req.db.collection("Games").findOne({ _id: new ObjectId(id) });
+  } else {
+    doc = await req.db
+      .collection("Games")
+      .find()
+      .toArray();
+  }
+  console.log(doc);
   res.json(doc);
-  // otherwise, return all of the games
-  /*
-  doc = [];
-  doc = await req.db.collection("Games").find();
-  */
 });
 
 handler.post(async (req: any, res: any) => {
