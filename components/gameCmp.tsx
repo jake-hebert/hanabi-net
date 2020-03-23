@@ -1,7 +1,8 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
-import { Game } from "../types";
+import { Game, Player } from "../types";
 import { blankGame, dealHand } from "../gameFunctions";
+import Hand from "./hand";
 
 interface GameCmpProps {
   gameId: string;
@@ -34,10 +35,6 @@ const getPlayerNumber = (game: Game) => {
   }
 };
 
-const updateGame = (game: Game) => {
-  // update the game!
-};
-
 export default class GameCmp extends React.Component<
   GameCmpProps,
   GameCmpState
@@ -65,26 +62,36 @@ export default class GameCmp extends React.Component<
     }
   }
 
+  updateGame = (game: Game) => {
+    // make database update
+    // here
+    //
+
+    this.setState({ game });
+  };
+
+  handleHint = (hint: string, player: Player) => {
+    let gameUpdate: Game = { ...this.state.game };
+    gameUpdate.lastHint = hint;
+    gameUpdate.playerList.filter(p => {
+      p.position === player.position;
+    })[0].hand = { ...player.hand };
+    this.updateGame(gameUpdate);
+  };
+
+  hands = (game: Game): JSX.Element[] => {
+    let hands: JSX.Element[] = [];
+    game.playerList.forEach(player => {
+      hands.push(<Hand player={player} giveHint={this.handleHint} />);
+    });
+    return hands;
+  };
+
   playerHand = (): JSX.Element[] => {
     const playerNumber = this.state.playerNumber - 1;
     if (this.state.game.playerList[playerNumber]) {
       const hand = this.state.game.playerList[playerNumber].hand;
-      return hand.map(card => (
-        <div
-          style={{
-            display: "inline-block",
-            height: "60px",
-            width: "40px",
-            border: "1px solid black",
-            padding: "1px",
-            margin: "2px"
-          }}
-        >
-          {card.color}
-          <br />
-          {card.num}
-        </div>
-      ));
+      return this.hands(this.state.game);
     } else {
       return [<div>loading</div>];
     }

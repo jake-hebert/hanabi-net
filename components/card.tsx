@@ -16,7 +16,7 @@ export default class Card extends React.Component<CardProps, any> {
           width: "40px",
           border: "1px solid black",
           padding: "1px",
-          margin: "2px", 
+          margin: "2px",
           backgroundColor: this.props.card.color,
           fontWeight: "bold",
           fontSize: "12px"

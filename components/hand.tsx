@@ -4,17 +4,17 @@ import Card from "./card";
 
 interface HandProps {
   player: Player;
-  updatePlayer(player: Player): void;
+  giveHint(hint: String, player: Player): void;
 }
 
-// interface GameCmpState {
-// }
-const updateCard = () => {};
+// interface GameCmpState {}
 
 export default class Hand extends React.Component<HandProps, any> {
+  updateCard = () => {};
+
   buildHand = (player: Player): JSX.Element[] => {
     const hand = player.hand;
-    return hand.map(card => <Card card={card} updateCard={updateCard} />);
+    return hand.map(card => <Card card={card} updateCard={this.updateCard} />);
   };
 
   render() {
