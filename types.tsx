@@ -9,9 +9,10 @@ export interface GameCard {
 }
 
 export interface Player {
-  position: number;
+  // id: string;
+  position: number; // remove this once we have a player index
   hand: GameCard[];
-  name: string;
+  //name: string;
 }
 
 export interface Game {
@@ -19,6 +20,7 @@ export interface Game {
   status: string; //"won" | "lost" | "new" | "active"
   requiredPlayers: number;
   activePlayers: number;
+  //playerIndex: {[position : number] : Player}; // use this
   playerList: Player[];
   drawPile: GameCard[];
   discardPile: GameCard[];
@@ -33,7 +35,7 @@ export interface Game {
   lastHint: string;
 }
 
-export interface Move {
-  id: string;
-  gameId: string;
-}
+// export interface Move {
+//   id: string;
+//   gameId: string;
+// }

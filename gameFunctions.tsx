@@ -21,7 +21,7 @@ export const initGame = (totalPlayers: number): Game => {
     discardPile: [],
     bombs: 0,
     hints: 8,
-    turn: 1,
+    turn: 0,
     redPile: 0,
     bluePile: 0,
     yellowPile: 0,
@@ -29,6 +29,7 @@ export const initGame = (totalPlayers: number): Game => {
     greenPile: 0,
     lastHint: ""
   };
+  initAllPlayers(game);
   return game;
 };
 
@@ -54,25 +55,34 @@ export const blankGame = (): Game => {
   return game;
 };
 
+// this method mutates the game that is passed in
+const initAllPlayers = (game: Game) => {
+  let playerList: Player[] = [];
+  for (let i = 0; i < game.requiredPlayers; i++) {
+    let player: Player = initPlayer(i);
+    dealHand(player, game);
+    game.playerList.push(player);
+  }
+};
+
 // init player
-export const initPlayer = (playerPosition: number, name: string): Player => {
+export const initPlayer = (playerPosition: number): Player => {
   return {
+    // id: ,
     position: playerPosition,
-    hand: [],
-    name: name
+    hand: []
+    //name: name
   };
 };
 
-// deal a hand
-export const dealHand = (game: Game, position: number): Game => {
+// deal a hand - mutates player & game!
+export const dealHand = (player: Player, game: Game) => {
   const n = game.requiredPlayers < 4 ? 5 : 4; // less than 4 players, 5 cards each. 4 or more, 4 cards
-  let player = initPlayer(position, "player");
+  //let player = initPlayer(position, "player");
   for (let i = 0; i < n; i++) {
     const card = game.drawPile.pop() as GameCard;
     player.hand.push(card);
   }
-  game.playerList.push(player);
-  return game;
 };
 
 // buildDeck
