@@ -153,16 +153,34 @@ export default class GameCmp extends React.Component<
 
   displayTurn = (): JSX.Element => {
     if (this.state.game.turn === this.state.playerNumber) {
-      return (
-        <div>
-          It's your turn!
-          <p>
-            <button onClick={this.turnSelectPlay}>play card</button>
-            <button onClick={this.turnSelectDiscard}>discard card</button>
-            <button onClick={this.turnSelectHint}>give hint</button>
-          </p>
-        </div>
-      );
+      if (this.state.turnType === "") {
+        return (
+          <div>
+            It's your turn!
+            <p>
+              <button onClick={this.turnSelectPlay}>play card</button>
+              <button onClick={this.turnSelectDiscard}>discard card</button>
+              <button onClick={this.turnSelectHint}>give hint</button>
+            </p>
+          </div>
+        );
+      } else if (this.state.turnType === "hint") {
+        return (
+          <div>
+            <input value={"hint goes here..."} />
+            {/*onChange={e => setHint(e.target.value)} />*/}
+            <button onClick={this.submitGame}>give hint</button>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <button onClick={this.submitGame}>
+              confirm {this.state.turnType}
+            </button>
+          </div>
+        );
+      }
     } else {
       return <div>Player {this.state.playerNumber + 1}'s turn</div>;
     }
@@ -179,7 +197,7 @@ export default class GameCmp extends React.Component<
             height: "100%"
           }}
         >
-          {this.displayTurn()}
+          <div style={{ height: "75px" }}>{this.displayTurn()}</div>
           <div>
             <br />
             {this.displayHands()}
