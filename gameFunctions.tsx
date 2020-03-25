@@ -27,7 +27,8 @@ export const initGame = (totalPlayers: number): Game => {
     yellowPile: 0,
     whitePile: 0,
     greenPile: 0,
-    lastHint: ""
+    lastHint: "",
+    lastRound: 0
   };
   initAllPlayers(game);
   return game;
@@ -50,7 +51,8 @@ export const blankGame = (): Game => {
     yellowPile: 0,
     whitePile: 0,
     greenPile: 0,
-    lastHint: ""
+    lastHint: "",
+    lastRound: 0
   };
   return game;
 };

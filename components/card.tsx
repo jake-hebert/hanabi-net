@@ -13,8 +13,8 @@ export default class Card extends React.Component<CardProps, any> {
       if (this.props.hideValues === true) {
         return "grey";
       }
-      if (this.props.card.color == "Blue") {
-        return "light-blue";
+      if (this.props.card.color == "blue") {
+        return "aqua";
       } else {
         return this.props.card.color;
       }

@@ -5,7 +5,7 @@ import Card from "./card";
 interface HandProps {
   game: Game;
   player: Player;
-  giveHint(hint: String, player: Player): void;
+  //giveHint(hint: String, player: Player): void;
   hideValues: boolean;
   updateGame(game: Game): void;
 }
@@ -18,7 +18,6 @@ export default class Hand extends React.Component<HandProps, any> {
     game.playerList[this.props.player.position].hand.filter(h => {
       h.id === card.id;
     })[0] = card;
-    console.log(game);
     this.props.updateGame(game);
   };
 

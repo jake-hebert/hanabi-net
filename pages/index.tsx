@@ -7,7 +7,6 @@ import GameDetails from "../components/gameDetails";
 const Index = (data: any) => {
   const getGames = () => {
     let dataKeys = Object.keys(data);
-    console.log(dataKeys);
     let games: Game[] = [];
     let values = Object.values(data);
     for (let i = 0; i < values.length - 1; i++) {
