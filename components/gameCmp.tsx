@@ -164,11 +164,11 @@ export default class GameCmp extends React.Component<
       }
       if (!validMove) {
         game.bombs++;
+        playCard.selected = false;
         game.discardPile.push(playCard);
       }
       if (game.drawPile.length > 0) {
         let drawCard: GameCard = game.drawPile.pop() as GameCard;
-        drawCard.selected = false;
         game.playerList[this.state.playerNumber].hand.push(drawCard);
       }
       this.takeTurn(game);
@@ -316,15 +316,6 @@ export default class GameCmp extends React.Component<
     return game;
   };
 
-  // handleHint = (hint: string, player: Player) => {
-  //   let gameUpdate: Game = { ...this.state.game };
-  //   gameUpdate.lastHint = hint;
-  //   gameUpdate.playerList.filter(p => {
-  //     p.position === player.position;
-  //   })[0].hand = { ...player.hand };
-  //   this.updateGame(gameUpdate);
-  // };
-
   hands = (game: Game): JSX.Element[] => {
     let hands: JSX.Element[] = [];
     game.playerList.forEach(player => {
@@ -350,7 +341,6 @@ export default class GameCmp extends React.Component<
   };
 
   displayDiscards = (): JSX.Element[] => {
-    const playerNumber = this.state.playerNumber;
     if (this.state.game.discardPile) {
       return this.discardPile();
     } else {
