@@ -168,6 +168,7 @@ export default class GameCmp extends React.Component<
       }
       if (game.drawPile.length > 0) {
         let drawCard: GameCard = game.drawPile.pop() as GameCard;
+        drawCard.selected = false;
         game.playerList[this.state.playerNumber].hand.push(drawCard);
       }
       this.takeTurn(game);
