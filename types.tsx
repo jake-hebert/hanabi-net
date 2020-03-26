@@ -17,7 +17,7 @@ export interface Player {
 
 export interface Game {
   _id?: string | null;
-  status: string; //"won" | "lost" | "new" | "active"
+  status: string; //"complete" | "active"
   requiredPlayers: number;
   activePlayers: number;
   //playerIndex: {[position : number] : Player}; // use this
@@ -34,6 +34,7 @@ export interface Game {
   greenPile: number;
   lastHint: string;
   lastRound: number;
+  score: number;
 }
 
 // export interface Move {

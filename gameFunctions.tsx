@@ -13,7 +13,7 @@ const numberCountMap: { [key: number]: number } = {
 export const initGame = (totalPlayers: number): Game => {
   let game: Game = {
     _id: null,
-    status: "new",
+    status: "active",
     requiredPlayers: totalPlayers,
     activePlayers: 0,
     playerList: [],
@@ -28,7 +28,8 @@ export const initGame = (totalPlayers: number): Game => {
     whitePile: 0,
     greenPile: 0,
     lastHint: "",
-    lastRound: 0
+    lastRound: -1,
+    score: 0
   };
   initAllPlayers(game);
   return game;
@@ -37,7 +38,7 @@ export const initGame = (totalPlayers: number): Game => {
 export const blankGame = (): Game => {
   let game: Game = {
     _id: null,
-    status: "new",
+    status: "active",
     requiredPlayers: 0,
     activePlayers: 0,
     playerList: [],
@@ -52,14 +53,14 @@ export const blankGame = (): Game => {
     whitePile: 0,
     greenPile: 0,
     lastHint: "",
-    lastRound: 0
+    lastRound: -1,
+    score: 0
   };
   return game;
 };
 
 // this method mutates the game that is passed in
 const initAllPlayers = (game: Game) => {
-  let playerList: Player[] = [];
   for (let i = 0; i < game.requiredPlayers; i++) {
     let player: Player = initPlayer(i);
     dealHand(player, game);

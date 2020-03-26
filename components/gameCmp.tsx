@@ -7,6 +7,7 @@ import Card from "./card";
 
 interface GameCmpProps {
   gameId: string;
+  playerNumber?: number; // if we need to pass in the player number - optional
 }
 
 interface GameCmpState {
@@ -71,7 +72,13 @@ export default class GameCmp extends React.Component<
   async componentDidMount() {
     if (this.props.gameId !== null) {
       let game = await getGame(this.props.gameId);
-      const playerNumber = getPlayerNumber(game);
+      let playerNumber = -1;
+      console.log(typeof this.props.playerNumber, this.props.playerNumber);
+      if (this.props.playerNumber !== undefined) {
+        playerNumber = this.props.playerNumber;
+      } else {
+        playerNumber = getPlayerNumber(game);
+      }
       this.setState({
         game,
         playerNumber
@@ -105,53 +112,112 @@ export default class GameCmp extends React.Component<
     this.turnSelect("hint");
   };
 
-  handlePlay = (game: Game): boolean => {
-    const selectedCards = {
-      ...this.state.game.playerList[this.state.playerNumber].hand
-    }.filter(card => card.selected);
+  handlePlay = (game: Game) => {
+    let error: string = "";
+    const selectedCards = game.playerList[this.state.playerNumber].hand.filter(
+      card => card.selected
+    );
     // throw an error if more than one card is selected
     if (selectedCards.length != 1) {
       this.setState({ error: "Please select one card to play" });
       return false;
+    }
+    if (error !== "") {
+      this.setState({ error });
+    } else {
+      const cardIndex = game.playerList[this.state.playerNumber].hand.findIndex(
+        c => c.selected
+      );
+      let playCard = game.playerList[this.state.playerNumber].hand[cardIndex];
+      game.playerList[this.state.playerNumber].hand.splice(cardIndex, 1);
+      let validMove: boolean = false;
+      switch (playCard.color) {
+        case "red":
+          if (game.redPile + 1 === playCard.num) {
+            game.redPile++;
+            validMove = true;
+          }
+          break;
+        case "blue":
+          if (game.bluePile + 1 === playCard.num) {
+            game.bluePile++;
+            validMove = true;
+          }
+          break;
+        case "yellow":
+          if (game.yellowPile + 1 === playCard.num) {
+            game.yellowPile++;
+            validMove = true;
+          }
+          break;
+        case "white":
+          if (game.whitePile + 1 === playCard.num) {
+            game.whitePile++;
+            validMove = true;
+          }
+          break;
+        case "green":
+          if (game.greenPile + 1 === playCard.num) {
+            game.greenPile++;
+            validMove = true;
+          }
+      }
+      if (!validMove) {
+        game.bombs++;
+        game.discardPile.push(playCard);
+      }
+      if (game.drawPile.length > 0) {
+        let drawCard: GameCard = game.drawPile.pop() as GameCard;
+        game.playerList[this.state.playerNumber].hand.push(drawCard);
+      }
+      this.takeTurn(game);
+      this.checkEndGame(game);
+      this.setState({ game, error: "", turnType: "" });
+      submitGame(game);
     }
 
     return true;
   };
 
   handleDiscard = (game: Game) => {
+    let error: string = "";
     const selectedCards = this.state.game.playerList[
       this.state.playerNumber
     ].hand.filter(card => card.selected);
     // throw an error if more than one card is selected
     if (selectedCards.length != 1) {
-      this.setState({ error: "Please select one card to discard" });
+      error = "Please select one card to discard";
     }
-    let discardCard: GameCard;
-    let cardIndex: number = 0;
-    for (
-      let i = 0;
-      i < game.playerList[this.state.playerNumber].hand.length;
-      i++
-    ) {
-      if (game.playerList[this.state.playerNumber].hand[i].selected) {
-        cardIndex = i;
-        break;
+    if (error !== "") {
+      this.setState({ error });
+    } else {
+      let discardCard: GameCard;
+      const cardIndex = game.playerList[this.state.playerNumber].hand.findIndex(
+        c => c.selected
+      );
+      discardCard = {
+        ...game.playerList[this.state.playerNumber].hand[cardIndex]
+      };
+      game.playerList[this.state.playerNumber].hand.splice(cardIndex, 1);
+      discardCard.selected = false;
+      game.discardPile.push(discardCard);
+      if (game.drawPile.length > 0) {
+        const drawCard = game.drawPile.pop() as GameCard;
+        game.playerList[this.state.playerNumber].hand.push(drawCard);
       }
+      // start final round if we drew the last card:
+      if (game.discardPile.length < 1 && game.lastRound === -1) {
+        game.lastRound = 0;
+      }
+      if (game.hints < 8) {
+        game.hints++;
+      }
+      game.lastHint = this.state.hintText;
+      this.takeTurn(game);
+      this.checkEndGame(game);
+      this.setState({ game, error: "", turnType: "" });
+      submitGame(game);
     }
-    discardCard = {
-      ...game.playerList[this.state.playerNumber].hand[cardIndex]
-    };
-    game.playerList[this.state.playerNumber].hand.splice(cardIndex, 1);
-    game.discardPile.push(discardCard);
-    if (game.drawPile.length > 0) {
-      const drawCard = game.drawPile.pop() as GameCard;
-      game.playerList[this.state.playerNumber].hand.push(drawCard);
-    }
-    if (game.hints < 8) {
-      game.hints++;
-    }
-    this.setState({ game, error: "", turnType: "" });
-    submitGame(game);
   };
 
   handleHint = (game: Game) => {
@@ -180,13 +246,14 @@ export default class GameCmp extends React.Component<
     } else {
       game.lastHint = this.state.hintText;
       game.hints--;
+      this.takeTurn(game);
+      this.checkEndGame(game);
       this.setState({ game, error: "", turnType: "" });
       submitGame(game);
     }
   };
 
-  handleSubmitGame = () => {
-    console.log("submitting:" + this.state.turnType);
+  takeTurn = (game: Game) => {
     // increment turn
     let newTurn = (): number => {
       if (this.state.game.turn < this.state.game.requiredPlayers - 1) {
@@ -195,8 +262,35 @@ export default class GameCmp extends React.Component<
         return 0;
       }
     };
-    let game: Game = JSON.parse(JSON.stringify(this.state.game));
     game.turn = newTurn();
+    if (game.lastRound > -1) {
+      game.lastRound++;
+    }
+  };
+
+  checkEndGame = (game: Game) => {
+    const score =
+      game.bluePile +
+      game.redPile +
+      game.greenPile +
+      game.whitePile +
+      game.yellowPile;
+    if (score === 25) {
+      game.score = score;
+      game.status = "complete";
+    }
+    if (game.bombs === 3) {
+      game.score = score;
+      game.status = "complete";
+    }
+    if (game.lastRound > game.requiredPlayers) {
+      game.score = score;
+      game.status = "complete";
+    }
+  };
+  handleSubmitGame = () => {
+    console.log("submitting:" + this.state.turnType);
+    let game: Game = JSON.parse(JSON.stringify(this.state.game));
     if (this.state.turnType == "play") {
       this.handlePlay(game);
     }
@@ -308,9 +402,43 @@ export default class GameCmp extends React.Component<
           </div>
         );
       }
-    } else {
+    } else if (this.state.game.status === "active") {
       return <div>Player {this.state.game.turn + 1}'s turn</div>;
+    } else {
+      return <div>Game complete! Your score is {this.state.game.score}</div>;
     }
+  };
+
+  getCardStyle = (color: string): object => {
+    return {
+      display: "inline-block",
+      height: "60px",
+      width: "40px",
+      border: "1px solid black",
+      padding: "1px",
+      margin: "2px",
+      backgroundColor: color,
+      fontWeight: "bold",
+      fontSize: "24px"
+    };
+  };
+
+  displayPlayStacks = (): JSX.Element => {
+    return (
+      <div>
+        <div style={this.getCardStyle("red")}> {this.state.game.redPile} </div>
+        <div style={this.getCardStyle("aqua")}>{this.state.game.bluePile}</div>
+        <div style={this.getCardStyle("white")}>
+          {this.state.game.whitePile}
+        </div>
+        <div style={this.getCardStyle("yellow")}>
+          {this.state.game.yellowPile}
+        </div>
+        <div style={this.getCardStyle("green")}>
+          {this.state.game.greenPile}
+        </div>
+      </div>
+    );
   };
 
   setHint = (e: any) => {
@@ -356,7 +484,12 @@ export default class GameCmp extends React.Component<
             Cards in draw pile: {" " + this.state.game.drawPile.length}
             <br />
           </div>
-          <div>{this.displayDiscards}</div>
+          <div style={{ padding: "5px" }}>
+            Play Stacks: <br /> {this.displayPlayStacks()}
+          </div>
+          <div style={{ padding: "5px" }}>
+            Discard: <br /> {this.displayDiscards()}
+          </div>
         </div>
       </div>
     );

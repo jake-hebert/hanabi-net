@@ -24,7 +24,7 @@ const Index = (data: any) => {
       <div>
         <p>
           <span className="title">Welcome to Hanabi-Net!</span>
-          <br />A place for... hopefully, eventually playing Hanabi online
+          <br />A place for playing Hanabi online
         </p>
       </div>
       <br />
