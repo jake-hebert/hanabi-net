@@ -12,3 +12,10 @@ export const getQryParams = (url: string): { [param: string]: string } => {
   }
   return params;
 };
+
+// generates a random 11 character string
+export const randomString = () => {
+  return Math.random()
+    .toString(36)
+    .slice(2);
+};

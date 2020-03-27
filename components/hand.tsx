@@ -5,7 +5,7 @@ import Card from "./card";
 interface HandProps {
   game: Game;
   player: Player;
-  //giveHint(hint: String, player: Player): void;
+  //name: string;
   hideValues: boolean;
   updateGame(game: Game): void;
 }

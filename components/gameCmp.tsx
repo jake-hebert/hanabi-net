@@ -1,13 +1,15 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
-import { Game, Player, GameCard } from "../types";
+import { Game, Player, GameCard, Cookies } from "../types";
 import { blankGame, dealHand } from "../gameFunctions";
 import Hand from "./hand";
 import Card from "./card";
+import { randomString } from "../utilityFunctions";
 
 interface GameCmpProps {
   gameId: string;
   playerNumber?: number; // if we need to pass in the player number - optional
+  cookies: Cookies;
 }
 
 interface GameCmpState {
@@ -16,6 +18,7 @@ interface GameCmpState {
   turnType: string;
   error: string;
   hintText: string;
+  //playerName: string;
 }
 
 const getGame = async (gameId: string) => {
@@ -43,15 +46,31 @@ const submitGame = async (game: Game) => {
   });
 };
 
-const getPlayerNumber = (game: Game) => {
+const getPlayerNumber = (game: Game, cookies: Cookies): number => {
+  if (cookies != undefined) {
+    const playerId = cookies.userId as string;
+    console.log(game.playerIndex);
+    if (game.playerIndex) {
+      console.log(game.playerIndex[playerId]);
+      return game.playerIndex[playerId];
+    }
+  }
   if (game.activePlayers < game.requiredPlayers) {
     let playerNum = game.activePlayers;
     game.activePlayers++;
-    submitGame(game);
-    return playerNum;
-  } else {
-    return -1;
+    if (cookies) {
+      if (game.playerIndex === undefined) {
+        game.playerIndex = {
+          [cookies.userId as string]: playerNum
+        };
+      } else {
+        game.playerIndex[cookies.userId as string] = playerNum;
+      }
+      submitGame(game);
+      return playerNum;
+    }
   }
+  return -1;
 };
 
 export default class GameCmp extends React.Component<
@@ -66,6 +85,7 @@ export default class GameCmp extends React.Component<
       turnType: "",
       error: "",
       hintText: ""
+      //playerName: props.cookies.name as string
     };
   }
 
@@ -73,11 +93,12 @@ export default class GameCmp extends React.Component<
     if (this.props.gameId !== null) {
       let game = await getGame(this.props.gameId);
       let playerNumber = -1;
-      console.log(typeof this.props.playerNumber, this.props.playerNumber);
+      console.log(this.props.cookies);
+
       if (this.props.playerNumber !== undefined) {
         playerNumber = this.props.playerNumber;
       } else {
-        playerNumber = getPlayerNumber(game);
+        playerNumber = getPlayerNumber(game, this.props.cookies);
       }
       this.setState({
         game,
@@ -87,6 +108,7 @@ export default class GameCmp extends React.Component<
   }
 
   refresh = async () => {
+    console.log(this.state.game);
     let game = await getGame(this.props.gameId);
     this.setState({ game, error: "", turnType: "" });
   };
@@ -167,10 +189,20 @@ export default class GameCmp extends React.Component<
         playCard.selected = false;
         game.discardPile.push(playCard);
       }
+      if (validMove && playCard.num === 5 && game.hints < 8) {
+        game.hints++;
+      }
       if (game.drawPile.length > 0) {
         let drawCard: GameCard = game.drawPile.pop() as GameCard;
         game.playerList[this.state.playerNumber].hand.push(drawCard);
       }
+      game.priorTurn =
+        "Player " +
+        (this.state.playerNumber + 1) +
+        " played " +
+        playCard.color +
+        " " +
+        playCard.num;
       this.takeTurn(game);
       this.checkEndGame(game);
       this.setState({ game, error: "", turnType: "" });
@@ -206,14 +238,16 @@ export default class GameCmp extends React.Component<
         const drawCard = game.drawPile.pop() as GameCard;
         game.playerList[this.state.playerNumber].hand.push(drawCard);
       }
-      // start final round if we drew the last card:
-      if (game.discardPile.length < 1 && game.lastRound === -1) {
-        game.lastRound = 0;
-      }
       if (game.hints < 8) {
         game.hints++;
       }
-      game.lastHint = this.state.hintText;
+      game.priorTurn =
+        "Player " +
+        (this.state.playerNumber + 1) +
+        " discarded " +
+        discardCard.color +
+        " " +
+        discardCard.num;
       this.takeTurn(game);
       this.checkEndGame(game);
       this.setState({ game, error: "", turnType: "" });
@@ -245,7 +279,11 @@ export default class GameCmp extends React.Component<
     if (error !== "") {
       this.setState({ error });
     } else {
-      game.lastHint = this.state.hintText;
+      game.priorTurn =
+        "Player " +
+        (this.state.playerNumber + 1) +
+        " gave hint: " +
+        this.state.hintText;
       game.hints--;
       this.takeTurn(game);
       this.checkEndGame(game);
@@ -264,6 +302,10 @@ export default class GameCmp extends React.Component<
       }
     };
     game.turn = newTurn();
+    // start final round if we drew the last card:
+    if (game.drawPile.length < 1 && game.lastRound === -1) {
+      game.lastRound = 0;
+    }
     if (game.lastRound > -1) {
       game.lastRound++;
     }
@@ -313,6 +355,7 @@ export default class GameCmp extends React.Component<
         player.hand[j].selected = false;
       }
     }
+    this.setState({ hintText: "" });
     return game;
   };
 
@@ -417,7 +460,7 @@ export default class GameCmp extends React.Component<
   displayPlayStacks = (): JSX.Element => {
     return (
       <div>
-        <div style={this.getCardStyle("red")}> {this.state.game.redPile} </div>
+        <div style={this.getCardStyle("red")}>{this.state.game.redPile}</div>
         <div style={this.getCardStyle("aqua")}>{this.state.game.bluePile}</div>
         <div style={this.getCardStyle("white")}>
           {this.state.game.whitePile}
@@ -466,7 +509,7 @@ export default class GameCmp extends React.Component<
         >
           <div>
             <br />
-            Last Hint: {" " + this.state.game.lastHint}
+            Prior Turn: {" " + this.state.game.priorTurn}
             <br />
             Available Hints: {" " + this.state.game.hints}
             <br />

@@ -20,7 +20,7 @@ export interface Game {
   status: string; //"complete" | "active"
   requiredPlayers: number;
   activePlayers: number;
-  //playerIndex: {[position : number] : Player}; // use this
+  playerIndex: { [id: string]: number } | undefined;
   playerList: Player[];
   drawPile: GameCard[];
   discardPile: GameCard[];
@@ -32,9 +32,13 @@ export interface Game {
   yellowPile: number;
   whitePile: number;
   greenPile: number;
-  lastHint: string;
+  priorTurn: string;
   lastRound: number;
   score: number;
+}
+
+export interface Cookies {
+  [key: string]: string | undefined;
 }
 
 // export interface Move {

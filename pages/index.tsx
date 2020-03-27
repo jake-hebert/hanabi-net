@@ -1,15 +1,22 @@
 import Link from "next/link";
 import Layout from "../components/Layout";
 import fetch from "isomorphic-unfetch";
-import { Game } from "../types";
+import { Game, Cookies } from "../types";
 import GameDetails from "../components/gameDetails";
+import cookies from "next-cookies";
 
-const Index = (data: any) => {
+interface IndexProps {
+  data: any;
+  allCookies: Cookies;
+}
+
+const Index = (props: IndexProps) => {
+  console.log(props.allCookies);
   const getGames = () => {
-    let dataKeys = Object.keys(data);
+    const g: Game = props.data[0];
+    let values = props.data;
     let games: Game[] = [];
-    let values = Object.values(data);
-    for (let i = 0; i < values.length - 1; i++) {
+    for (let i = 0; i < values.length; i++) {
       games.push(values[i] as Game);
     }
     return games;
@@ -27,10 +34,19 @@ const Index = (data: any) => {
           <br />A place for playing Hanabi online
         </p>
       </div>
+      {/*
       <br />
+      Set your name:
+      <br/>
+      <input
+        value={this.state.hintText}
+        onChange={(e: any) => this.setHint(e)}
+      />
+      <button onClick={this.handleSubmitGame}>Save name</button>
+      */}
       <div>
         <Link href="/newGamePage">
-          <button title="new game"> Start a game </button>
+          <button title="new game"> Start a new game </button>
         </Link>
       </div>
       <br />
@@ -49,7 +65,7 @@ const Index = (data: any) => {
   );
 };
 
-Index.getInitialProps = async () => {
+Index.getInitialProps = async (ctx: any) => {
   const baseUri =
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
@@ -57,9 +73,9 @@ Index.getInitialProps = async () => {
   const res = await fetch(baseUri + "/api/games", {
     method: "get"
   });
-
   const data = await res.json();
-  return data;
+  let allCookies = cookies(ctx);
+  return { data, allCookies };
 };
 
 export default Index;

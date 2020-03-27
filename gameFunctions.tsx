@@ -17,6 +17,7 @@ export const initGame = (totalPlayers: number): Game => {
     requiredPlayers: totalPlayers,
     activePlayers: 0,
     playerList: [],
+    playerIndex: undefined,
     drawPile: initDeck(),
     discardPile: [],
     bombs: 0,
@@ -27,7 +28,7 @@ export const initGame = (totalPlayers: number): Game => {
     yellowPile: 0,
     whitePile: 0,
     greenPile: 0,
-    lastHint: "",
+    priorTurn: "",
     lastRound: -1,
     score: 0
   };
@@ -42,6 +43,7 @@ export const blankGame = (): Game => {
     requiredPlayers: 0,
     activePlayers: 0,
     playerList: [],
+    playerIndex: undefined,
     drawPile: [],
     discardPile: [],
     bombs: 0,
@@ -52,7 +54,7 @@ export const blankGame = (): Game => {
     yellowPile: 0,
     whitePile: 0,
     greenPile: 0,
-    lastHint: "",
+    priorTurn: "",
     lastRound: -1,
     score: 0
   };

@@ -2,11 +2,16 @@ import Layout from "../../components/Layout";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import GameCmp from "../../components/gameCmp";
+import cookies from "next-cookies";
+import { Cookies } from "../../types";
 
-const game = () => {
+interface GamePageProps {
+  allCookies: Cookies;
+}
+
+const game = (props: GamePageProps) => {
   const router = useRouter();
   const { gameid, player } = router.query;
-  console.log("player num" + player);
   const id: string = gameid as string;
   let p: number | undefined = player
     ? parseInt(player as string, 10)
@@ -14,13 +19,15 @@ const game = () => {
 
   return (
     <Layout>
-      <GameCmp gameId={id} playerNumber={p} />
+      <GameCmp gameId={id} playerNumber={p} cookies={props.allCookies} />
     </Layout>
   );
 };
 
-game.getInitialProps = async () => {
-  return {};
+game.getInitialProps = async (ctx: any) => {
+  let allCookies = cookies(ctx);
+  console.log("cookies", allCookies);
+  return { allCookies: allCookies };
 };
 
 export default game;
