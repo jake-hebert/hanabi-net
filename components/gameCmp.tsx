@@ -94,7 +94,6 @@ export default class GameCmp extends React.Component<
       let game = await getGame(this.props.gameId);
       let playerNumber = -1;
       console.log(this.props.cookies);
-
       if (this.props.playerNumber !== undefined) {
         playerNumber = this.props.playerNumber;
       } else {
@@ -104,8 +103,15 @@ export default class GameCmp extends React.Component<
         game,
         playerNumber
       });
+      setInterval(this.intervalRefresh, 7000);
     }
   }
+
+  intervalRefresh = () => {
+    if (this.state.game.turn != this.state.playerNumber) {
+      this.refresh();
+    }
+  };
 
   refresh = async () => {
     console.log(this.state.game);
