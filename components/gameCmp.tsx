@@ -112,7 +112,7 @@ export default class GameCmp extends React.Component<
     }
   };
   refresh = async () => {
-    console.log(this.state.game);
+    //console.log(this.state.game);
     let game = await getGame(this.props.gameId);
     this.setState({ game, error: "", turnType: "" });
   };
