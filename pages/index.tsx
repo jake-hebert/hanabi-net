@@ -1,17 +1,29 @@
 import Link from "next/link";
 import Layout from "../components/Layout";
 import fetch from "isomorphic-unfetch";
-import { Game, Cookies } from "../types";
+import { Game, BrowserCookies } from "../types";
 import GameDetails from "../components/gameDetails";
 import cookies from "next-cookies";
+import Cookies from "universal-cookie";
+
+import { randomString } from "../utilityFunctions";
 
 interface IndexProps {
   data: any;
-  allCookies: Cookies;
+  allCookies: BrowserCookies;
 }
 
 const Index = (props: IndexProps) => {
   console.log(props.allCookies);
+  if (!props.allCookies.userId) {
+    const cookies = new Cookies();
+    console.log(cookies.get("userId"));
+    cookies.set("userId", randomString(), {
+      path: "/",
+      expires: new Date(Date.now() + 600000000)
+    });
+    console.log(cookies.get("userId"));
+  }
   const getGames = () => {
     const g: Game = props.data[0];
     let values = props.data;

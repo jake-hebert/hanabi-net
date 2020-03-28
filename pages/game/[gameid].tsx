@@ -3,10 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import GameCmp from "../../components/gameCmp";
 import cookies from "next-cookies";
-import { Cookies } from "../../types";
+import { BrowserCookies } from "../../types";
 
 interface GamePageProps {
-  allCookies: Cookies;
+  allCookies: BrowserCookies;
 }
 
 const game = (props: GamePageProps) => {

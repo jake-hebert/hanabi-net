@@ -37,7 +37,7 @@ export interface Game {
   score: number;
 }
 
-export interface Cookies {
+export interface BrowserCookies {
   [key: string]: string | undefined;
 }
 

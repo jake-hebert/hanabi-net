@@ -1,6 +1,6 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
-import { Game, Player, GameCard, Cookies } from "../types";
+import { Game, Player, GameCard, BrowserCookies } from "../types";
 import { blankGame, dealHand } from "../gameFunctions";
 import Hand from "./hand";
 import Card from "./card";
@@ -9,7 +9,7 @@ import { randomString } from "../utilityFunctions";
 interface GameCmpProps {
   gameId: string;
   playerNumber?: number; // if we need to pass in the player number - optional
-  cookies: Cookies;
+  cookies: BrowserCookies;
 }
 
 interface GameCmpState {
@@ -46,7 +46,7 @@ const submitGame = async (game: Game) => {
   });
 };
 
-const getPlayerNumber = (game: Game, cookies: Cookies): number => {
+const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
   if (cookies != undefined) {
     const playerId = cookies.userId as string;
     console.log(game.playerIndex);
