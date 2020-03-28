@@ -50,7 +50,7 @@ const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
   if (cookies != undefined) {
     const playerId = cookies.userId as string;
     console.log(game.playerIndex);
-    if (game.playerIndex) {
+    if (game.playerIndex && game.playerIndex[playerId]) {
       console.log(game.playerIndex[playerId]);
       return game.playerIndex[playerId];
     }
@@ -106,13 +106,11 @@ export default class GameCmp extends React.Component<
       setInterval(this.intervalRefresh, 7000);
     }
   }
-
-  intervalRefresh = () => {
+  intervalRefresh = async () => {
     if (this.state.game.turn != this.state.playerNumber) {
-      this.refresh();
+      await this.refresh();
     }
   };
-
   refresh = async () => {
     console.log(this.state.game);
     let game = await getGame(this.props.gameId);
