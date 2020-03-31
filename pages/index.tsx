@@ -34,9 +34,11 @@ const Index = (props: IndexProps) => {
     return games;
   };
 
-  const gameList = getGames().map(g => (
-    <GameDetails game={g} key={g._id as string} />
-  ));
+  const gameList = (playerId: string) => {
+    return getGames().map(g => (
+      <GameDetails game={g} key={g._id as string} playerId={playerId} />
+    ));
+  };
 
   return (
     <Layout>
@@ -62,7 +64,7 @@ const Index = (props: IndexProps) => {
         </Link>
       </div>
       <br />
-      <div>{gameList}</div>
+      <div>{gameList(props.allCookies["userId"] as string)}</div>
       <style jsx>
         {`
           a {

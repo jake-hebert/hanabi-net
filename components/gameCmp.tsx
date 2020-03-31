@@ -49,12 +49,18 @@ const submitGame = async (game: Game) => {
 const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
   if (cookies != undefined) {
     const playerId = cookies.userId as string;
-    console.log(game.playerIndex);
-    if (game.playerIndex && game.playerIndex[playerId]) {
-      console.log(game.playerIndex[playerId]);
+    console.log("Player index ", game.playerIndex);
+    if (game.playerIndex && game.playerIndex[playerId] !== undefined) {
+      console.log("player value from index: ", game.playerIndex[playerId]);
       return game.playerIndex[playerId];
     }
   }
+  console.log(
+    "Active: ",
+    game.activePlayers,
+    "required ",
+    game.requiredPlayers
+  );
   if (game.activePlayers < game.requiredPlayers) {
     let playerNum = game.activePlayers;
     game.activePlayers++;
@@ -66,6 +72,10 @@ const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
       } else {
         game.playerIndex[cookies.userId as string] = playerNum;
       }
+      console.log(
+        "player index after processing, pre submit: ",
+        game.playerIndex
+      );
       submitGame(game);
       return playerNum;
     }

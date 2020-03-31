@@ -3,11 +3,17 @@ import { Game } from "../types";
 import Link from "next/link";
 interface GameDetailProps {
   game: Game;
+  playerId: string | undefined;
 }
 
 export default class NewGameForm extends React.Component<GameDetailProps, any> {
   joinGame = () => {
-    if (this.props.game.activePlayers !== this.props.game.requiredPlayers) {
+    if (
+      this.props.game.activePlayers < this.props.game.requiredPlayers ||
+      (this.props.game.playerIndex &&
+        this.props.playerId !== undefined &&
+        this.props.game.playerIndex[this.props.playerId] !== undefined)
+    ) {
       return (
         <Link href={"/game/" + this.props.game._id}>
           <button> Join Game </button>
