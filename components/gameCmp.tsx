@@ -28,7 +28,7 @@ const getGame = async (gameId: string) => {
       ? "http://localhost:3000"
       : "https://hanabi-net.herokuapp.com";
   const res = await fetch(baseUri + "/api/games?id=" + gameId, {
-    method: "get"
+    method: "get",
   });
 
   const game: Game = await res.json();
@@ -42,7 +42,7 @@ const submitGame = async (game: Game) => {
       : "https://hanabi-net.herokuapp.com";
   const res = await fetch(baseUri + "/api/games", {
     method: "post",
-    body: JSON.stringify(game)
+    body: JSON.stringify(game),
   });
 };
 
@@ -67,7 +67,7 @@ const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
     if (cookies) {
       if (game.playerIndex === undefined) {
         game.playerIndex = {
-          [cookies.userId as string]: playerNum
+          [cookies.userId as string]: playerNum,
         };
       } else {
         game.playerIndex[cookies.userId as string] = playerNum;
@@ -94,7 +94,7 @@ export default class GameCmp extends React.Component<
       playerNumber: 0,
       turnType: "",
       error: "",
-      hintText: ""
+      hintText: "",
       //playerName: props.cookies.name as string
     };
   }
@@ -111,7 +111,7 @@ export default class GameCmp extends React.Component<
       }
       this.setState({
         game,
-        playerNumber
+        playerNumber,
       });
       setInterval(this.intervalRefresh, 7000);
     }
@@ -151,7 +151,7 @@ export default class GameCmp extends React.Component<
   handlePlay = (game: Game) => {
     let error: string = "";
     const selectedCards = game.playerList[this.state.playerNumber].hand.filter(
-      card => card.selected
+      (card) => card.selected
     );
     // throw an error if more than one card is selected
     if (selectedCards.length != 1) {
@@ -162,7 +162,7 @@ export default class GameCmp extends React.Component<
       this.setState({ error });
     } else {
       const cardIndex = game.playerList[this.state.playerNumber].hand.findIndex(
-        c => c.selected
+        (c) => c.selected
       );
       let playCard = game.playerList[this.state.playerNumber].hand[cardIndex];
       game.playerList[this.state.playerNumber].hand.splice(cardIndex, 1);
@@ -230,7 +230,7 @@ export default class GameCmp extends React.Component<
     let error: string = "";
     const selectedCards = this.state.game.playerList[
       this.state.playerNumber
-    ].hand.filter(card => card.selected);
+    ].hand.filter((card) => card.selected);
     // throw an error if more than one card is selected
     if (selectedCards.length != 1) {
       error = "Please select one card to discard";
@@ -240,10 +240,10 @@ export default class GameCmp extends React.Component<
     } else {
       let discardCard: GameCard;
       const cardIndex = game.playerList[this.state.playerNumber].hand.findIndex(
-        c => c.selected
+        (c) => c.selected
       );
       discardCard = {
-        ...game.playerList[this.state.playerNumber].hand[cardIndex]
+        ...game.playerList[this.state.playerNumber].hand[cardIndex],
       };
       game.playerList[this.state.playerNumber].hand.splice(cardIndex, 1);
       discardCard.selected = false;
@@ -275,7 +275,7 @@ export default class GameCmp extends React.Component<
     let error: string = "";
     for (let i = 0; i < players.length; i++) {
       const player: Player = players[i];
-      const selectedHand = player.hand.filter(c => c.selected);
+      const selectedHand = player.hand.filter((c) => c.selected);
       if (selectedHand.length > 0) {
         selectedPlayers.push(player);
       }
@@ -375,7 +375,7 @@ export default class GameCmp extends React.Component<
 
   hands = (game: Game): JSX.Element[] => {
     let hands: JSX.Element[] = [];
-    game.playerList.forEach(player => {
+    game.playerList.forEach((player) => {
       hands.push(
         <Hand
           game={this.state.game}
@@ -406,7 +406,7 @@ export default class GameCmp extends React.Component<
   };
 
   discardPile = (): JSX.Element[] => {
-    return this.state.game.discardPile.map(card => (
+    return this.state.game.discardPile.map((card) => (
       <Card card={card} hideValues={false} />
     ));
   };
@@ -418,7 +418,10 @@ export default class GameCmp extends React.Component<
     }
   };
   displayTurn = (): JSX.Element => {
-    if (this.state.game.turn === this.state.playerNumber) {
+    if (
+      this.state.game.turn === this.state.playerNumber &&
+      this.state.game.status === "active"
+    ) {
       if (this.state.turnType === "") {
         return (
           <div>
@@ -467,7 +470,7 @@ export default class GameCmp extends React.Component<
       margin: "2px",
       backgroundColor: color,
       fontWeight: "bold",
-      fontSize: "24px"
+      fontSize: "24px",
     };
   };
 
@@ -501,7 +504,7 @@ export default class GameCmp extends React.Component<
             margin: "auto",
             width: "50%",
             border: "1px solid black",
-            height: "100%"
+            height: "100%",
           }}
         >
           <div>
@@ -518,7 +521,7 @@ export default class GameCmp extends React.Component<
           style={{
             border: "1px solid black",
             width: "50%",
-            height: "100%"
+            height: "100%",
           }}
         >
           <div>
