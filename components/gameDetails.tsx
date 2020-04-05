@@ -43,7 +43,10 @@ export default class NewGameForm extends React.Component<GameDetailProps, any> {
           <br /> Players: {this.props.game.activePlayers} /{" "}
           {this.props.game.requiredPlayers}
           <br />
-          Chat Link: <a href={this.props.game.chatLink}>{chatStr()}</a>
+          Chat Link:{" "}
+          <a href={this.props.game.chatLink} target="_blank">
+            {chatStr()}
+          </a>
           <br />
           {this.joinBtn}
         </p>
