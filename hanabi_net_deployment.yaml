@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: hanabi-net-ui
+    namespace: hanabi-net
+    labels:
+        run: hanabi-net
+        tier: hanabi-net-ui
+spec:
+    type: LoadBalancer
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 3000
+    selector:
+        run: hanabi-net
+        tier: hanabi-net-ui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: hanabi-net-ui
+    namespace: hanabi-net
+spec:
+    selector:
+        matchLabels:
+            run: hanabi-net
+            tier: hanabi-net-ui
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                run: hanabi-net
+                tier: hanabi-net-ui
+        spec:
+            containers: 
+            - name: hanabi-net-ui
+              image: gcr.io/hanabi-net/hanabi-net-ui:0.1
+              imagePullPolicy: Always
+              env:
+                  - name: PORT
+                    value: "3000"
+              ports:
+              - containerPort: 3000
+
