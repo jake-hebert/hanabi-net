@@ -62,13 +62,34 @@ const Index = (props: IndexProps) => {
       </div>
       <br />
       <div>{gameList(props.allCookies["userId"] as string)}</div>
-      <style jsx>
+      <style jsx global>
         {`
           a {
             padding: 20px 30px 0px 10px;
           }
           .title {
             font-size: 25px;
+          }
+          button {
+            display: inline-block;
+            border: none;
+            padding: 5px;
+            margin: 0;
+            text-decoration: none;
+            background: blue;
+            color: #ffffff;
+            font-family: sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 10px;
+            transition: background 250ms ease-in-out, transform 150ms ease;
+          }
+          button:hover {
+            background: lightBlue;
+          }
+          button:active {
+            transform: scale(0.99);
           }
         `}
       </style>

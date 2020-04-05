@@ -456,6 +456,7 @@ export default class GameCmp extends React.Component<
       backgroundColor: color,
       fontWeight: "bold",
       fontSize: "24px",
+      borderRadius: "10%",
     };
   };
 
@@ -470,7 +471,7 @@ export default class GameCmp extends React.Component<
         <div style={this.getCardStyle("yellow")}>
           {this.state.game.yellowPile}
         </div>
-        <div style={this.getCardStyle("green")}>
+        <div style={this.getCardStyle("LawnGreen")}>
           {this.state.game.greenPile}
         </div>
       </div>
