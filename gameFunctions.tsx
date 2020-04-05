@@ -6,7 +6,7 @@ const numberCountMap: { [key: number]: number } = {
   2: 2,
   3: 2,
   4: 2,
-  5: 1
+  5: 1,
 };
 
 // init game
@@ -30,7 +30,8 @@ export const initGame = (totalPlayers: number): Game => {
     greenPile: 0,
     priorTurn: "",
     lastRound: -1,
-    score: 0
+    score: 0,
+    chatLink: "",
   };
   initAllPlayers(game);
   return game;
@@ -56,7 +57,8 @@ export const blankGame = (): Game => {
     greenPile: 0,
     priorTurn: "",
     lastRound: -1,
-    score: 0
+    score: 0,
+    chatLink: "",
   };
   return game;
 };
@@ -75,7 +77,7 @@ export const initPlayer = (playerPosition: number): Player => {
   return {
     // id: ,
     position: playerPosition,
-    hand: []
+    hand: [],
     //name: name
   };
 };
@@ -95,7 +97,7 @@ const initDeck = (): GameCard[] => {
   let colorList = [...colors];
   let deck: GameCard[] = [];
   let idCounter: number = 0;
-  colorList.forEach(color => {
+  colorList.forEach((color) => {
     for (let i = 1; i < 6; i++) {
       const numCount = numberCountMap[i];
       for (let j = 0; j < numCount; j++) {
@@ -104,7 +106,7 @@ const initDeck = (): GameCard[] => {
           id: idCounter,
           num: i,
           color: color,
-          selected: false
+          selected: false,
         };
         deck.push(card);
       }

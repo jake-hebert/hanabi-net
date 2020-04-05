@@ -45,6 +45,7 @@ export default class NewGameForm extends React.Component<any, NewGameState> {
     return (
       <div>
         <label>Players:</label>
+        <br />
         <input
           type="number"
           min="2"
@@ -52,17 +53,17 @@ export default class NewGameForm extends React.Component<any, NewGameState> {
           value={this.state.numberOfPlayers}
           onChange={this.handlePlayers}
         />
-        <p>
-          <br />
-          Link to a zoom/hangout/discord
-          <br />
-          <input
-            type="text"
-            value={this.state.chatLink}
-            onChange={this.handleChat}
-          />
-          <button onClick={this.handleSubmit}> Create game </button>
-        </p>
+        <br />
+        <br />
+        Link to a zoom/hangout/discord
+        <br />
+        <input
+          type="text"
+          value={this.state.chatLink}
+          onChange={this.handleChat}
+        />
+        <br />
+        <button onClick={this.handleSubmit}> Create game </button>
       </div>
     );
   }

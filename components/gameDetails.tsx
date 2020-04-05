@@ -25,6 +25,16 @@ export default class NewGameForm extends React.Component<GameDetailProps, any> {
   joinBtn = this.joinGame();
 
   render() {
+    const chatStr = () => {
+      if (!this.props.game.chatLink) {
+        return "";
+      }
+      if (this.props.game.chatLink.length < 30) {
+        return this.props.game.chatLink;
+      }
+      return this.props.game.chatLink.substring(0, 30) + "...";
+    };
+
     return (
       <div>
         <p>
@@ -32,6 +42,8 @@ export default class NewGameForm extends React.Component<GameDetailProps, any> {
           <br /> Status: {this.props.game.status}
           <br /> Players: {this.props.game.activePlayers} /{" "}
           {this.props.game.requiredPlayers}
+          <br />
+          Chat Link: <a href={this.props.game.chatLink}>{chatStr()}</a>
           <br />
           {this.joinBtn}
         </p>
