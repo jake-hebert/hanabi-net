@@ -26,4 +26,4 @@ hanabi-net-ui   LoadBalancer   10.8.13.127   34.227.159.20   80:32156/TCP   32m
 ```
 
 **Play Hanabi-net!**  
-http://<EXTERNAL-IP>:80
+http://[EXTERNAL-IP]:80
