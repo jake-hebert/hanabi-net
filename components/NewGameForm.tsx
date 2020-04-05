@@ -5,30 +5,38 @@ import Router from "next/router";
 
 interface NewGameState {
   numberOfPlayers: number;
+  chatLink: string;
 }
 
 export default class NewGameForm extends React.Component<any, NewGameState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      numberOfPlayers: 3
+      numberOfPlayers: 3,
+      chatLink: "",
     };
   }
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  handlePlayers = (event: React.ChangeEvent<HTMLInputElement>) => {
     let n = parseInt(event.target.value, 10);
     this.setState({ numberOfPlayers: n });
   };
 
+  handleChat = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let chatLink = event.target.value;
+    this.setState({ chatLink });
+  };
+
   handleSubmit = async (event: any) => {
     const game = initGame(this.state.numberOfPlayers);
+    game.chatLink = this.state.chatLink;
     const baseUri =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
         : "https://hanabi-net.herokuapp.com";
     const res = await fetch(baseUri + "/api/games", {
       method: "post",
-      body: JSON.stringify(game)
+      body: JSON.stringify(game),
     });
     Router.push("/index");
   };
@@ -39,12 +47,20 @@ export default class NewGameForm extends React.Component<any, NewGameState> {
         <label>Players:</label>
         <input
           type="number"
-          min="3"
+          min="2"
           max="5"
           value={this.state.numberOfPlayers}
-          onChange={this.handleChange}
+          onChange={this.handlePlayers}
         />
         <p>
+          <br />
+          Link to a zoom/hangout/discord
+          <br />
+          <input
+            type="text"
+            value={this.state.chatLink}
+            onChange={this.handleChat}
+          />
           <button onClick={this.handleSubmit}> Create game </button>
         </p>
       </div>

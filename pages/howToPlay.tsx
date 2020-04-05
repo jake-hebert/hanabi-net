@@ -1,5 +1,12 @@
 import Layout from "../components/Layout";
 
+const getUri = () => {
+  if (typeof window !== "undefined") {
+    return encodeURI(window.location.href);
+  }
+  return "serverside";
+};
+
 export default function howToPlay() {
   return (
     <Layout>
@@ -39,6 +46,47 @@ export default function howToPlay() {
           </ul>
         </li>
       </ul>
+      <div>
+        {/*}
+        <iframe
+          src={
+            "http://servcloud-vs.cs54.force.com/CaseCreate?isdtp=mn&url=" +
+            getUri()
+          }
+        />
+        */}
+        {/*
+        <form
+          action="https://callawaycloud--partial.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
+          method="POST"
+        >
+          <input type="hidden" name="orgid" value="00DL00000061lsC" />
+          <input
+            type="hidden"
+            name="retURL"
+            value="https://hanabi-net.herokuapp.com/howToPlay"
+          />
+          <label htmlFor="name">Contact Name</label>
+          <input id="name" name="name" size={20} type="text" />
+          <br />
+          <label htmlFor="email">Email</label>
+          <input id="email" name="email" size={20} type="text" />
+          <br />
+          <label htmlFor="phone">Phone</label>
+          <input id="phone" name="phone" size={20} type="text" />
+          <br />
+          <label htmlFor="subject">Subject</label>
+          <input id="subject" name="subject" size={20} type="text" />
+          <br />
+          <label htmlFor="description">Description</label>
+          <textarea name="description"></textarea>
+          <br />
+          <input type="hidden" id="external" name="external" value="1" />
+          <br />
+          <input type="submit" name="submit" />
+        </form>
+        */}
+      </div>
     </Layout>
   );
 }

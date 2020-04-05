@@ -35,6 +35,7 @@ export interface Game {
   priorTurn: string;
   lastRound: number;
   score: number;
+  chatLink: string;
 }
 
 export interface BrowserCookies {
