@@ -1,5 +1,6 @@
 import React from "react";
 import { Game, GameCard } from "../types";
+import { stringify } from "querystring";
 
 interface CardProps {
   card: GameCard;
@@ -7,7 +8,11 @@ interface CardProps {
   hideValues: boolean;
 }
 
-export default class Card extends React.Component<CardProps, any> {
+interface CardState {
+  transform: number;
+}
+
+export default class Card extends React.Component<CardProps, CardState> {
   render() {
     const cardColor = () => {
       if (this.props.hideValues === true) {
@@ -15,9 +20,23 @@ export default class Card extends React.Component<CardProps, any> {
       }
       if (this.props.card.color == "blue") {
         return "aqua";
+      }
+      if (this.props.card.color == "green") {
+        return "LawnGreen";
       } else {
         return this.props.card.color;
       }
+    };
+
+    const getImgSrc = () => {
+      if (this.props.hideValues === true) {
+        return 'URL("/HanabiCardBack.png")';
+      }
+      return "";
+    };
+
+    const getTransform = () => {
+      return "rotate(0deg)";
     };
 
     const selectCard = (e: any) => {
@@ -30,21 +49,36 @@ export default class Card extends React.Component<CardProps, any> {
     return (
       <div
         style={{
+          width: "60px",
+          height: "90px",
           display: "inline-block",
-          height: "60px",
-          width: "40px",
-          border: this.props.card.selected
-            ? "4px solid blue"
-            : "1px solid black",
-          padding: "1px",
-          margin: "2px",
-          backgroundColor: cardColor(),
-          fontWeight: "bold",
-          fontSize: "24px"
+          padding: "5px",
         }}
-        onClick={selectCard}
       >
-        {this.props.hideValues ? "*" : this.props.card.num}
+        <div
+          style={{
+            height: "90px",
+            width: "60px",
+            border: this.props.card.selected
+              ? "4px solid blue"
+              : "2px solid gray",
+            borderRadius: "10%",
+            //padding: "3px",
+            margin: "2px",
+            backgroundImage: getImgSrc(),
+            backgroundColor: cardColor(),
+            backgroundSize: "60px 90px",
+            backgroundRepeat: "no-repeat",
+            fontWeight: "bold",
+            fontSize: "24px",
+            fontFamily: "sans-serif",
+            transform: getTransform(),
+          }}
+          onClick={selectCard}
+        >
+          &nbsp;
+          {this.props.hideValues ? "" : this.props.card.num.toString()}
+        </div>
       </div>
     );
   }

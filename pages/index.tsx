@@ -14,15 +14,12 @@ interface IndexProps {
 }
 
 const Index = (props: IndexProps) => {
-  console.log(props.allCookies);
   if (!props.allCookies.userId) {
     const cookies = new Cookies();
-    console.log(cookies.get("userId"));
     cookies.set("userId", randomString(), {
       path: "/",
-      expires: new Date(Date.now() + 600000000)
+      expires: new Date(Date.now() + 600000000),
     });
-    console.log(cookies.get("userId"));
   }
   const getGames = () => {
     const g: Game = props.data[0];
@@ -35,7 +32,7 @@ const Index = (props: IndexProps) => {
   };
 
   const gameList = (playerId: string) => {
-    return getGames().map(g => (
+    return getGames().map((g) => (
       <GameDetails game={g} key={g._id as string} playerId={playerId} />
     ));
   };
@@ -85,7 +82,7 @@ Index.getInitialProps = async (ctx: any) => {
       ? "http://localhost:3000"
       : "https://hanabi-net.herokuapp.com";
   const res = await fetch(baseUri + "/api/games", {
-    method: "get"
+    method: "get",
   });
   const data = await res.json();
   let allCookies = cookies(ctx);

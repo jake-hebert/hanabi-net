@@ -49,18 +49,10 @@ const submitGame = async (game: Game) => {
 const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
   if (cookies != undefined) {
     const playerId = cookies.userId as string;
-    console.log("Player index ", game.playerIndex);
     if (game.playerIndex && game.playerIndex[playerId] !== undefined) {
-      console.log("player value from index: ", game.playerIndex[playerId]);
       return game.playerIndex[playerId];
     }
   }
-  console.log(
-    "Active: ",
-    game.activePlayers,
-    "required ",
-    game.requiredPlayers
-  );
   if (game.activePlayers < game.requiredPlayers) {
     let playerNum = game.activePlayers;
     game.activePlayers++;
@@ -72,10 +64,6 @@ const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
       } else {
         game.playerIndex[cookies.userId as string] = playerNum;
       }
-      console.log(
-        "player index after processing, pre submit: ",
-        game.playerIndex
-      );
       submitGame(game);
       return playerNum;
     }
@@ -103,7 +91,6 @@ export default class GameCmp extends React.Component<
     if (this.props.gameId !== null) {
       let game = await getGame(this.props.gameId);
       let playerNumber = -1;
-      console.log(this.props.cookies);
       if (this.props.playerNumber !== undefined) {
         playerNumber = this.props.playerNumber;
       } else {
@@ -122,7 +109,6 @@ export default class GameCmp extends React.Component<
     }
   };
   refresh = async () => {
-    //console.log(this.state.game);
     let game = await getGame(this.props.gameId);
     this.setState({ game, error: "", turnType: "" });
   };
@@ -346,7 +332,6 @@ export default class GameCmp extends React.Component<
     }
   };
   handleSubmitGame = () => {
-    console.log("submitting:" + this.state.turnType);
     let game: Game = JSON.parse(JSON.stringify(this.state.game));
     if (this.state.turnType == "play") {
       this.handlePlay(game);
