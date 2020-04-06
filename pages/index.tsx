@@ -7,13 +7,20 @@ import cookies from "next-cookies";
 import Cookies from "universal-cookie";
 
 import { randomString } from "../utilityFunctions";
+import { useState } from "react";
 
 interface IndexProps {
   data: any;
   allCookies: BrowserCookies;
+  playerName: string | undefined;
+  displayNameInput: boolean;
 }
 
 const Index = (props: IndexProps) => {
+  const [playerName, setPlayerName] = useState(props.playerName);
+  const [displayNameInput, setDisplayNameInput] = useState(
+    props.displayNameInput
+  );
   if (!props.allCookies.userId) {
     const cookies = new Cookies();
     cookies.set("userId", randomString(), {
@@ -22,7 +29,6 @@ const Index = (props: IndexProps) => {
     });
   }
   const getGames = () => {
-    const g: Game = props.data[0];
     let values = props.data;
     let games: Game[] = [];
     for (let i = 0; i < values.length; i++) {
@@ -37,6 +43,48 @@ const Index = (props: IndexProps) => {
     ));
   };
 
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPlayerName(event.target.value);
+  };
+
+  const nameInput = (): JSX.Element => {
+    console.log("hitting a function...");
+    return (
+      <div>
+        <label>Player Name:</label>
+        <input type="text" value={playerName} onChange={handleNameChange} />
+        <button onClick={updateName}>Save name</button>
+      </div>
+    );
+  };
+
+  const nameDisplay = (): JSX.Element => {
+    console.log("hitting a display function...");
+    return (
+      <div>
+        <label>Player Name: </label>
+        <span style={{ fontStyle: "italic" }}>
+          {playerName ? playerName : " set your name -> "}
+        </span>
+        <button onClick={toggleNameUpdate}> Change Name</button>
+      </div>
+    );
+  };
+
+  const toggleNameUpdate = (event: any) => {
+    console.log("triggering re-render?");
+    setDisplayNameInput(true);
+  };
+
+  const updateName = (event: any) => {
+    const cookies = new Cookies();
+    cookies.set("playerName", playerName, {
+      path: "/",
+      expires: new Date(Date.now() + 600000000),
+    });
+    setDisplayNameInput(false);
+  };
+
   return (
     <Layout>
       <div>
@@ -44,17 +92,9 @@ const Index = (props: IndexProps) => {
           <span className="title">Welcome to Hanabi-Net!</span>
           <br />A place for playing Hanabi online
         </p>
+        <br />
+        {displayNameInput ? nameInput() : nameDisplay()}
       </div>
-      {/*
-      <br />
-      Set your name:
-      <br/>
-      <input
-        value={this.state.hintText}
-        onChange={(e: any) => this.setHint(e)}
-      />
-      <button onClick={this.handleSubmitGame}>Save name</button>
-      */}
       <div>
         <Link href="/newGamePage">
           <button title="new game"> Start a new game </button>
@@ -62,37 +102,6 @@ const Index = (props: IndexProps) => {
       </div>
       <br />
       <div>{gameList(props.allCookies["userId"] as string)}</div>
-      <style jsx global>
-        {`
-          a {
-            padding: 20px 30px 0px 10px;
-          }
-          .title {
-            font-size: 25px;
-          }
-          button {
-            display: inline-block;
-            border: none;
-            padding: 5px;
-            margin: 0;
-            text-decoration: none;
-            background: blue;
-            color: #ffffff;
-            font-family: sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 10px;
-            transition: background 250ms ease-in-out, transform 150ms ease;
-          }
-          button:hover {
-            background: lightBlue;
-          }
-          button:active {
-            transform: scale(0.99);
-          }
-        `}
-      </style>
     </Layout>
   );
 };
@@ -107,7 +116,8 @@ Index.getInitialProps = async (ctx: any) => {
   });
   const data = await res.json();
   let allCookies = cookies(ctx);
-  return { data, allCookies };
+  let playerName = allCookies.playerName;
+  return { data, allCookies, playerName, displayNameUpdate: false };
 };
 
 export default Index;

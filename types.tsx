@@ -10,9 +10,9 @@ export interface GameCard {
 
 export interface Player {
   // id: string;
-  position: number; // remove this once we have a player index
+  position: number;
   hand: GameCard[];
-  //name: string;
+  name: string | undefined;
 }
 
 export interface Game {

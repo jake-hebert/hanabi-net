@@ -57,6 +57,8 @@ const getPlayerNumber = (game: Game, cookies: BrowserCookies): number => {
     let playerNum = game.activePlayers;
     game.activePlayers++;
     if (cookies) {
+      const playerName = cookies.playerName;
+      game.playerList[playerNum].name = playerName;
       if (game.playerIndex === undefined) {
         game.playerIndex = {
           [cookies.userId as string]: playerNum,

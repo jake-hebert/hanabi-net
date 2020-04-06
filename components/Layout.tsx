@@ -18,7 +18,7 @@ const Layout = (props: any) => (
         button {
           display: inline-block;
           border: none;
-          padding: 5px 5px 10px 10px;
+          padding: 5px 10px 5px 10px;
           margin: 5px;
           text-decoration: none;
           background: blue;
