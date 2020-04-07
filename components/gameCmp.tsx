@@ -26,7 +26,7 @@ const getGame = async (gameId: string) => {
   const baseUri =
     process.env.NODE_ENV === "development"
       ? process.env.DEV_URI
-      process.env.PROD_URI;
+      : process.env.PROD_URI;
   const res = await fetch(baseUri + "/api/games?id=" + gameId, {
     method: "get",
   });
