@@ -15,7 +15,7 @@ interface HandProps {
 export default class Hand extends React.Component<HandProps, any> {
   updateCard = (card: GameCard) => {
     let game: Game = JSON.parse(JSON.stringify(this.props.game));
-    game.playerList[this.props.player.position].hand.filter(h => {
+    game.playerList[this.props.player.position].hand.filter((h) => {
       h.id === card.id;
     })[0] = card;
     this.props.updateGame(game);
@@ -23,7 +23,7 @@ export default class Hand extends React.Component<HandProps, any> {
 
   buildHand = (player: Player): JSX.Element[] => {
     const hand = player.hand;
-    return hand.map(card => (
+    return hand.map((card) => (
       <Card
         card={card}
         updateCard={this.updateCard}
@@ -35,7 +35,8 @@ export default class Hand extends React.Component<HandProps, any> {
   render() {
     return (
       <div>
-        Player {this.props.player.position + 1}
+        Player {this.props.player.position + 1}{" "}
+        {this.props.player.name ? this.props.player.name : ""}
         <br />
         {this.buildHand(this.props.player)}
       </div>

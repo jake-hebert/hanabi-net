@@ -78,7 +78,7 @@ export const initPlayer = (playerPosition: number): Player => {
     // id: ,
     position: playerPosition,
     hand: [],
-    //name: name
+    name: undefined,
   };
 };
 

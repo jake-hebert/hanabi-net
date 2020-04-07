@@ -26,7 +26,6 @@ const game = (props: GamePageProps) => {
 
 game.getInitialProps = async (ctx: any) => {
   let allCookies = cookies(ctx);
-  console.log("cookies", allCookies);
   return { allCookies: allCookies };
 };
 

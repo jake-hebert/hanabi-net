@@ -7,25 +7,28 @@ import cookies from "next-cookies";
 import Cookies from "universal-cookie";
 
 import { randomString } from "../utilityFunctions";
+import { useState } from "react";
 
 interface IndexProps {
   data: any;
   allCookies: BrowserCookies;
+  playerName: string | undefined;
+  displayNameInput: boolean;
 }
 
 const Index = (props: IndexProps) => {
-  console.log(props.allCookies);
+  const [playerName, setPlayerName] = useState(props.playerName);
+  const [displayNameInput, setDisplayNameInput] = useState(
+    props.displayNameInput
+  );
   if (!props.allCookies.userId) {
     const cookies = new Cookies();
-    console.log(cookies.get("userId"));
     cookies.set("userId", randomString(), {
       path: "/",
-      expires: new Date(Date.now() + 600000000)
+      expires: new Date(Date.now() + 600000000),
     });
-    console.log(cookies.get("userId"));
   }
   const getGames = () => {
-    const g: Game = props.data[0];
     let values = props.data;
     let games: Game[] = [];
     for (let i = 0; i < values.length; i++) {
@@ -35,9 +38,51 @@ const Index = (props: IndexProps) => {
   };
 
   const gameList = (playerId: string) => {
-    return getGames().map(g => (
+    return getGames().map((g) => (
       <GameDetails game={g} key={g._id as string} playerId={playerId} />
     ));
+  };
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPlayerName(event.target.value);
+  };
+
+  const nameInput = (): JSX.Element => {
+    console.log("hitting a function...");
+    return (
+      <div>
+        <label>Player Name:</label>
+        <input type="text" value={playerName} onChange={handleNameChange} />
+        <button onClick={updateName}>Save name</button>
+      </div>
+    );
+  };
+
+  const nameDisplay = (): JSX.Element => {
+    console.log("hitting a display function...");
+    return (
+      <div>
+        <label>Player Name: </label>
+        <span style={{ fontStyle: "italic" }}>
+          {playerName ? playerName : " set your name -> "}
+        </span>
+        <button onClick={toggleNameUpdate}> Change Name</button>
+      </div>
+    );
+  };
+
+  const toggleNameUpdate = (event: any) => {
+    console.log("triggering re-render?");
+    setDisplayNameInput(true);
+  };
+
+  const updateName = (event: any) => {
+    const cookies = new Cookies();
+    cookies.set("playerName", playerName, {
+      path: "/",
+      expires: new Date(Date.now() + 600000000),
+    });
+    setDisplayNameInput(false);
   };
 
   return (
@@ -47,17 +92,9 @@ const Index = (props: IndexProps) => {
           <span className="title">Welcome to Hanabi-Net!</span>
           <br />A place for playing Hanabi online
         </p>
+        <br />
+        {displayNameInput ? nameInput() : nameDisplay()}
       </div>
-      {/*
-      <br />
-      Set your name:
-      <br/>
-      <input
-        value={this.state.hintText}
-        onChange={(e: any) => this.setHint(e)}
-      />
-      <button onClick={this.handleSubmitGame}>Save name</button>
-      */}
       <div>
         <Link href="/newGamePage">
           <button title="new game"> Start a new game </button>
@@ -65,16 +102,6 @@ const Index = (props: IndexProps) => {
       </div>
       <br />
       <div>{gameList(props.allCookies["userId"] as string)}</div>
-      <style jsx>
-        {`
-          a {
-            padding: 20px 30px 0px 10px;
-          }
-          .title {
-            font-size: 25px;
-          }
-        `}
-      </style>
     </Layout>
   );
 };
@@ -85,11 +112,12 @@ Index.getInitialProps = async (ctx: any) => {
       ? "http://localhost:3000"
       : "https://hanabi-net.herokuapp.com";
   const res = await fetch(baseUri + "/api/games", {
-    method: "get"
+    method: "get",
   });
   const data = await res.json();
   let allCookies = cookies(ctx);
-  return { data, allCookies };
+  let playerName = allCookies.playerName;
+  return { data, allCookies, playerName, displayNameUpdate: false };
 };
 
 export default Index;
