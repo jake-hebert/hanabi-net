@@ -25,8 +25,8 @@ const getGame = async (gameId: string) => {
   //query for game based on id
   const baseUri =
     process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "https://hanabi-net.herokuapp.com";
+      ? process.env.DEV_URI
+      process.env.PROD_URI;
   const res = await fetch(baseUri + "/api/games?id=" + gameId, {
     method: "get",
   });
@@ -38,8 +38,8 @@ const getGame = async (gameId: string) => {
 const submitGame = async (game: Game) => {
   const baseUri =
     process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "https://hanabi-net.herokuapp.com";
+      ? process.env.DEV_URI
+      : process.env.PROD_URI;
   const res = await fetch(baseUri + "/api/games", {
     method: "post",
     body: JSON.stringify(game),

@@ -109,8 +109,8 @@ const Index = (props: IndexProps) => {
 Index.getInitialProps = async (ctx: any) => {
   const baseUri =
     process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "https://hanabi-net.herokuapp.com";
+      ? process.env.DEV_URI
+      : process.env.PROD_URI;
   const res = await fetch(baseUri + "/api/games", {
     method: "get",
   });
