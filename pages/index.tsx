@@ -89,7 +89,7 @@ const Index = (props: IndexProps) => {
     <Layout>
       <div>
         <p>
-          <span className="title">Welcome to Hanabi-Net!</span>
+          <span className="title">Welcome to Hanabi-Net (dev)!</span>
           <br />A place for playing Hanabi online
         </p>
         <br />
