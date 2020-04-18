@@ -89,7 +89,7 @@ const Index = (props: IndexProps) => {
     <Layout>
       <div>
         <p>
-          <span className="title">Welcome to Hanabi-Net!</span>
+          <span className="title">Welcome to Hanabi-Net (dev)!</span>
           <br />A place for playing Hanabi online
         </p>
         <br />
@@ -109,12 +109,18 @@ const Index = (props: IndexProps) => {
 Index.getInitialProps = async (ctx: any) => {
   const baseUri =
     process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "https://hanabi-net.herokuapp.com";
+      ? process.env.DEV_URI
+      : process.env.PROD_URI;
+  console.log("baseUri:" + baseUri)
+  console.log("fetching: GET" + baseUri + "/api/games")
   const res = await fetch(baseUri + "/api/games", {
     method: "get",
   });
+  const code = await res.status;
+  console.log("code:" + code)
   const data = await res.json();
+  console.log("data:" + data)
+
   let allCookies = cookies(ctx);
   let playerName = allCookies.playerName;
   return { data, allCookies, playerName, displayNameUpdate: false };
